@@ -57,6 +57,7 @@ header {
 header h4 {
     color: var(--primary-color);
     font-size: 12px;
+    margin-bottom: 10px;
 }
 
 header h2 {
@@ -72,12 +73,24 @@ header h2 {
 }
 
 .cd-thumb {
+    position: relative;
     width: 100%;
     padding-top: 100%;
     border-radius: 50%;
     background-color: #333;
     background-size: cover;
     margin: auto;
+}
+
+.cd-thumb::after {
+    position: absolute;
+    left: 42.5%;
+    top: 42.5%;
+    content: '';
+    width: 15%;
+    height: 15%;
+    background: #fff;
+    border-radius: 50%;
 }
 
 /* CONTROL */

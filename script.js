@@ -20,6 +20,7 @@ const nameSong = $("header h2");
 const imgSong = $(".cd-thumb");
 const audio = $("#audio");
 const btnPlay = $(".btn-toggle-play");
+const progress = $("#progress");
 
 const app = {
     currentIndex: 0,
@@ -62,8 +63,9 @@ const app = {
                 </div>
             `;
         });
-        $(".playlist").innerHTML = htmls.join('');
+        $(".playlist").innerHTML = htmls.join("");
     },
+    // Tạo thêm 1 obj property để app.currentSong trả về obj bài hát thứ 1
     defineProperties: function () {
         Object.defineProperty(this, "currentSong", {
             get: function () {
@@ -72,10 +74,20 @@ const app = {
         });
     },
     handleEvents: function () {
-        const _this = this
-        
+        // _this = app
+        const _this = this;
+
         // Lấy chiều dài của class cd
         const cdWidth = cd.offsetWidth;
+
+        // Xử lý quay cd
+        const rotateCD = imgSong.animate([
+            { transform: 'rotate(360deg)' }
+        ], {
+            duration: 10000, //10s
+            iterations: Infinity
+        })
+        rotateCD.pause()
 
         // Scroll
         document.onscroll = function () {
@@ -95,15 +107,33 @@ const app = {
                 audio.play();
             }
         };
-
+        // Xử lý phát nhạc
         audio.onplay = function () {
-            _this.isPlaying = true
-            player.classList.add('playing');
-        }
-
+            _this.isPlaying = true;
+            player.classList.add("playing");
+            rotateCD.play()
+        };
+        // Xử lý khi bị dừng
         audio.onpause = function () {
-            _this.isPlaying = false
-            player.classList.remove('playing');
+            _this.isPlaying = false;
+            player.classList.remove("playing");
+            rotateCD.pause()
+        };
+
+        // Xử lý thay đổi tiến độ bài hát
+        audio.ontimeupdate = function () {
+            if (audio.duration){
+                const timePercent = Math.floor(audio.currentTime / audio.duration * 100)
+                progress.value = timePercent
+            }
+        };
+
+        // Xử lý tua nhạc
+        progress.onchange = function (e) {
+            if(audio.duration) {
+                const changPercent = audio.duration * e.target.value / 100
+                audio.currentTime = changPercent
+            }
         }
     },
     loadCurrentSong: function () {
