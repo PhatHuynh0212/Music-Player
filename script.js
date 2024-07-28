@@ -1,6 +1,8 @@
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
 
+const PLAYER_STORAGE_KEY = 'MUSIC_PLAYER'
+
 const player = $(".player");
 const cd = $(".cd");
 const nameSong = $("header h2");
@@ -19,6 +21,11 @@ const app = {
     isPlaying: false,
     isRandom: false,
     isRepeat: false,
+    config: JSON.parse(localStorage.getItem(PLAYER_STORAGE_KEY)) || {},
+    setConfig: function(key, value) {
+        this.config[key] = value
+        localStorage.setItem(PLAYER_STORAGE_KEY, JSON.stringify(this.config))
+    },
     songs: [
         {
             name: "Monster",
@@ -157,12 +164,14 @@ const app = {
         // Xử lý bật tắt random song
         randomBtn.onclick = function() {
             _this.isRandom = !_this.isRandom
+            _this.setConfig('isRandom', _this.isRandom)
             randomBtn.classList.toggle('active', _this.isRandom)
         }
 
         // Xử lý bật tắt repeat song
         repeatBtn.onclick = function() {
             _this.isRepeat = !_this.isRepeat
+            _this.setConfig('isRepeat', _this.isRepeat)
             repeatBtn.classList.toggle('active', _this.isRepeat)
         }
 
@@ -199,6 +208,13 @@ const app = {
         imgSong.style.backgroundImage = `url('${this.currentSong.image}')`;
         audio.src = this.currentSong.path;
     },
+    loadConfig: function() {
+        this.isRandom = this.config.isRandom
+        this.isRepeat = this.config.isRepeat
+
+        randomBtn.classList.toggle('active', this.isRandom)
+        repeatBtn.classList.toggle('active', this.isRepeat)
+    },
     nextSong: function () {
         this.currentIndex++
         if(this.currentIndex >= this.songs.length) {
@@ -228,6 +244,9 @@ const app = {
         })
     },
     start: function () {
+        // Load các cấu hình lưu từ Config vào web
+        this.loadConfig()
+
         // Định nghĩa thuộc tính object
         this.defineProperties();
 
