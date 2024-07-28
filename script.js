@@ -1,16 +1,3 @@
-/*
-    1. Render songs
-    2. Scroll top
-    3. Play / pause / seek
-    4. CD rotate
-    5. Next / Prev
-    6. Random
-    7. Next, Repeat when ended
-    8. Active song
-    9. Scroll active song into view
-    10. Play song when click
-*/
-
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
 
@@ -25,6 +12,7 @@ const nextBtn = $('.btn-next')
 const prevBtn = $('.btn-prev')
 const repeatBtn = $('.btn-repeat')
 const randomBtn = $('.btn-random')
+const playlist = $('.playlist')
 
 const app = {
     currentIndex: 0,
@@ -54,7 +42,7 @@ const app = {
     render: function () {
         const htmls = this.songs.map((song, index) => {
             return `
-                <div class="song ${index === this.currentIndex ? 'active' : ''}">
+                <div class="song ${index === this.currentIndex ? 'active' : ''}" data-index=${index}>
                     <div
                         class="thumb"
                         style="background-image: url('${song.image}');"
@@ -151,6 +139,7 @@ const app = {
             }
             audio.play()
             _this.render()
+            _this.scrollActiveSong()
         }
 
         // Xử lý chuyển previous song
@@ -162,6 +151,7 @@ const app = {
             }
             audio.play()
             _this.render()
+            _this.scrollActiveSong()
         }
 
         // Xử lý bật tắt random song
@@ -182,6 +172,25 @@ const app = {
                 audio.play()
             } else {
                 nextBtn.click()
+            }
+        }
+
+        // Xử lý phát nhạc khi click
+        playlist.onclick = function(e) {
+            const songNode = e.target.closest('.song:not(.active)')
+            if(songNode || e.target.closest('.option')){
+                // Xử lý click nhạc
+                if(songNode) {
+                    _this.currentIndex = Number(songNode.getAttribute('data-index')) //songNode.dataset.index
+                    _this.loadCurrentSong()
+                    _this.render()
+                    audio.play()
+                }
+
+                // Xử lý option
+                if(e.target.closest('.option')){
+                    alert('Comeback soon~')
+                }
             }
         }
     },
@@ -211,6 +220,12 @@ const app = {
         } while (newIndex === this.currentIndex)
         this.currentIndex = newIndex
         this.loadCurrentSong()
+    },
+    scrollActiveSong: function() {
+        $('.song.active').scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+        })
     },
     start: function () {
         // Định nghĩa thuộc tính object

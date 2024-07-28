@@ -203,4 +203,33 @@ header h2 {
     padding: 16px 8px;
     color: #999;
     font-size: 18px;
+    cursor: pointer;
+}
+
+/* Footer */
+
+.footer {
+    height: 150px;
+    background-color: var(--primary-color);
+    border-radius: 12px 12px 0 0 ;
+}
+
+.footer .developer {
+    color: #fff;
+    font-size: 18px;
+    padding-top: 30px;
+    display: block;
+    text-align: center;
+}
+
+.footer .media-list {
+    width: 50%;
+    margin: 35px auto;
+    display: flex;
+    justify-content: space-between;
+}
+
+.footer a {
+    color: #fff;
+    font-size: 25px;
 }
